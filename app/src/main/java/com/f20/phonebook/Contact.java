@@ -7,7 +7,25 @@ public class Contact {
     private int phone;
     private String address;
 
+    public Contact() {
+        this.id = -1;
+        this.fname = "";
+        this.lname = "";
+        this.phone = 0;
+        this.address = "";
+    }
+
+
+    public Contact(int id, String fname, String lname, int phone, String address) {
+        this.id = id;
+        this.fname = fname;
+        this.lname = lname;
+        this.phone = phone;
+        this.address = address;
+    }
+
     public Contact(String fname, String lname, int phone, String address) {
+        this.id = -1;
         this.fname = fname;
         this.lname = lname;
         this.phone = phone;
