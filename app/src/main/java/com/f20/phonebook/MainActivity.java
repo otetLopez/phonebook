@@ -13,7 +13,9 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.SearchView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.w3c.dom.Text;
 
@@ -25,6 +27,7 @@ public class MainActivity extends AppCompatActivity {
     public static final String TAG = "MainActivity";
     DatabaseHelper mDatabase;
     List<Contact> contactList;
+    List<Contact> searchResults;
     private RecyclerView recyclerView;
     private ContactAdapter mAdapter;
     private RecyclerView.LayoutManager layoutManager;
@@ -38,6 +41,7 @@ public class MainActivity extends AppCompatActivity {
 
         mDatabase = new DatabaseHelper(MainActivity.this);
         contactList = new ArrayList<>();
+        searchResults = new ArrayList<>();
         configureRecyclerView();
         loadContacts();
 
@@ -51,6 +55,22 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+        SearchView sv = findViewById(R.id.sv_contacts);
+        sv.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String s) {
+                searchDetails(s);
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String s) {
+                searchDetails(s);
+                return false;
+            }
+        });
+
     }
 
     @Override
@@ -101,9 +121,10 @@ public class MainActivity extends AppCompatActivity {
             } while (cursor.moveToNext());
             cursor.close();
             Log.i(TAG, "loadFolder: " + "has total of contacts --> " + String.valueOf(contactList.size()));
+
             mAdapter = new ContactAdapter(this, contactList);
             recyclerView.setAdapter(mAdapter);
-            updateContactCount();
+            updateContactCount(contactList.size());
         }
 
     }
@@ -117,8 +138,26 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    private void updateContactCount() {
+    private void updateContactCount(int num) {
         TextView tvCount = findViewById(R.id.tv_count);
-        tvCount.setText("Total number of contacts: " + String.valueOf(contactList.size()));
+        tvCount.setText("Total number of contacts: " + String.valueOf(num));
+    }
+
+    private void searchDetails(String input) {
+        searchResults.clear();
+        for(int i = 0; i<contactList.size(); ++i) {
+            if(contactList.get(i).getFname().contains(input) || contactList.get(i).getFname().equalsIgnoreCase(input) ||
+            contactList.get(i).getLname().contains(input) || contactList.get(i).getLname().equalsIgnoreCase(input) ||
+            contactList.get(i).getAddress().contains(input) || contactList.get(i).getAddress().equalsIgnoreCase(input)) {
+                searchResults.add(contactList.get(i));
+            }
+        }
+        if(searchResults.size() == 0)
+            Toast.makeText(MainActivity.this, "No results found for search input", Toast.LENGTH_SHORT).show();
+        else {
+            mAdapter = new ContactAdapter(this, searchResults);
+            recyclerView.setAdapter(mAdapter);
+            updateContactCount(searchResults.size());
+        }
     }
 }

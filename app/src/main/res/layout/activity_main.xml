@@ -15,6 +15,11 @@
         android:textStyle="bold"
         android:textSize="40sp"/>
 
+    <SearchView
+        android:id="@+id/sv_contacts"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
