@@ -32,6 +32,7 @@ public class MainActivity extends AppCompatActivity {
     private ContactAdapter mAdapter;
     private RecyclerView.LayoutManager layoutManager;
     private SwipeController swipeController;
+    SearchView sv;
 
 
     @Override
@@ -56,7 +57,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        SearchView sv = findViewById(R.id.sv_contacts);
+        sv = findViewById(R.id.sv_contacts);
         sv.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String s) {
@@ -77,6 +78,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         loadContacts();
+        sv.clearFocus();
     }
 
     private void configureRecyclerView() {
